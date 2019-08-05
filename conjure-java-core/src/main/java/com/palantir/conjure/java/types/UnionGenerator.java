@@ -286,6 +286,7 @@ public final class UnionGenerator {
                     visitResultType,
                     visitorStageInterfaceName(unionClass, nextBuilderStage));
             setterMethods.add(setterPrototype
+                    .addAnnotation(Override.class)
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("$L", Expressions.requireNonNull(visitorFieldName(pair.memberName),
                             String.format("%s cannot be null", visitorFieldName(pair.memberName))))
@@ -310,6 +311,7 @@ public final class UnionGenerator {
             TypeName visitResultType,
             Map<FieldName, TypeName> memberTypeMap) {
         return MethodSpec.methodBuilder("build")
+                .addAnnotation(Override.class)
                 .returns(ParameterizedTypeName.get(visitorClass, visitResultType))
                 .addModifiers(Modifier.PUBLIC)
                 .addStatement("return $L",
@@ -335,6 +337,7 @@ public final class UnionGenerator {
         Stream<NameTypePair> memberTypes = memberTypeMap.entrySet().stream().map(NameTypePair::fromMapEntry);
         return Stream.concat(memberTypes, Stream.of(NameTypePair.UNKNOWN))
                 .map(pair -> MethodSpec.methodBuilder(visitMethodName(pair.memberName))
+                        .addAnnotation(Override.class)
                         .addModifiers(Modifier.PUBLIC)
                         .addParameter(pair.type, variableName())
                         .addStatement("return $L.apply($L)", visitorFieldName(pair.memberName), variableName())
